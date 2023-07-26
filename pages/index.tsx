@@ -7,9 +7,10 @@ import { AiOutlineArrowDown } from "react-icons/ai";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Stopwatch from "./stopwatch";
+// import image from "./assets/download.png";
 
 const zoom = 20;
-const areaWidth = 30;
+const areaWidth = 40;
 const areaHeight = 30;
 
 export default function Home() {
@@ -32,6 +33,7 @@ export default function Home() {
     for (let i = 1; i < body.length; i++) {
       if (body[i].top == body[0].top && body[i].left == body[0].left) {
         alert("Game over");
+
         handleRefresh();
       }
     }
@@ -183,104 +185,133 @@ export default function Home() {
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24`}
+      style={{
+        backgroundImage:
+          "url(" +
+          "https://snakearcade.netlify.app/static/media/oldMonitor.52c8438b.png" +
+          ")",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
     >
-      <div>Points: {point}</div>
-      <Stopwatch />
       <div
-        className="relative bg-slate-300"
         style={{
-          width: areaWidth * zoom,
-          height: areaHeight * zoom,
-          backgroundImage:
-            "url(" +
-            "https://docimg.replit.com/images/tutorials/21-snake-kaboom/background.png" +
-            ")",
+          position: "absolute",
+          right: 100,
         }}
       >
-        <div
-          className="absolute bg-red-600 rounded"
-          style={{
-            top: food.top * zoom,
-            left: food.left * zoom,
-            width: zoom,
-            height: zoom,
-          }}
-        ></div>
-        {body.map((segment) => (
-          <div
-            className="absolute rounded bg-slate-900"
-            style={{
-              top: segment.top * zoom,
-              left: segment.left * zoom,
-              width: zoom,
-              height: zoom,
-              backgroundColor: "#023020",
-            }}
-          ></div>
-        ))}
+        Your points: {point}
       </div>
-      <button onClick={handleRefresh}>Refresh</button>
-      <div
-        style={{
-          display: "flex",
-          gap: 0,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <Stopwatch />
+      <div>
         <div
-          onClick={() => setDirection("up")}
+          className="relative bg-slate-300"
           style={{
-            width: 50,
-            height: 50,
-            borderWidth: 2,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            width: areaWidth * zoom,
+            height: areaHeight * zoom,
+            position: "absolute",
+            backgroundColor: "black",
+            top: 150,
+            left: 700,
+            borderRadius: 10,
           }}
         >
-          <AiOutlineArrowUp />
+          <div
+            className="absolute rounded"
+            style={{
+              top: food.top * zoom,
+              left: food.left * zoom,
+              width: zoom,
+              height: zoom,
+              backgroundImage: `url(/download.png)`,
+              backgroundSize: "cover",
+            }}
+          ></div>
+
+          {body.map((segment) => (
+            <div
+              className="absolute rounded bg-slate-900"
+              style={{
+                top: segment.top * zoom,
+                left: segment.left * zoom,
+                width: zoom,
+                height: zoom,
+                backgroundColor: "green",
+              }}
+            ></div>
+          ))}
         </div>
-        <div style={{ display: "flex" }}>
+        <button onClick={handleRefresh}>Refresh</button>
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "absolute",
+            bottom: 20,
+            right: 40,
+          }}
+        >
           <div
-            onClick={() => setDirection("left")}
+            onClick={() => setDirection("up")}
             style={{
-              width: 50,
-              height: 50,
+              width: 100,
+              height: 100,
               borderWidth: 2,
+              fontSize: 40,
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <AiOutlineArrowLeft />
+            <AiOutlineArrowUp />
           </div>
-          <div
-            onClick={() => setDirection("down")}
-            style={{
-              width: 50,
-              height: 50,
-              borderWidth: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AiOutlineArrowDown />
-          </div>
-          <div
-            onClick={() => setDirection("right")}
-            style={{
-              width: 50,
-              height: 50,
-              borderWidth: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AiOutlineArrowRight />
+
+          <div style={{ display: "flex" }}>
+            <div
+              onClick={() => setDirection("left")}
+              style={{
+                width: 100,
+                height: 100,
+                fontSize: 40,
+                borderWidth: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AiOutlineArrowLeft />
+            </div>
+            <div
+              onClick={() => setDirection("down")}
+              style={{
+                width: 100,
+                height: 100,
+                fontSize: 40,
+                borderWidth: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AiOutlineArrowDown />
+            </div>
+            <div
+              onClick={() => setDirection("right")}
+              style={{
+                width: 100,
+                height: 100,
+                fontSize: 40,
+                borderWidth: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AiOutlineArrowRight />
+            </div>
           </div>
         </div>
       </div>
