@@ -47,21 +47,25 @@ export default function Home() {
         switch (e.code) {
           case "ArrowDown":
             if (prevDirection !== "up") {
+              beep();
               return "down";
             }
             break;
           case "ArrowRight":
             if (prevDirection !== "left") {
+              beep();
               return "right";
             }
             break;
           case "ArrowUp":
             if (prevDirection !== "down") {
+              beep();
               return "up";
             }
             break;
           case "ArrowLeft":
             if (prevDirection !== "right") {
+              beep();
               return "left";
             }
             break;
@@ -73,6 +77,20 @@ export default function Home() {
 
   function addPoint() {
     setPoint(point + 2);
+  }
+
+  function beep() {
+    var snd = new Audio(
+      "https://s33.aconvert.com/convert/p3r68-cdx67/tbyvh-x66r9.mp3"
+    );
+    snd.play();
+  }
+
+  function eat() {
+    var sound = new Audio(
+      "https://s19.aconvert.com/convert/p3r68-cdx67/pw4mh-0vojn.mp3"
+    );
+    sound.play();
   }
 
   function generateFood() {
@@ -165,22 +183,26 @@ export default function Home() {
       if (direction == "up") {
         setBody([...body, { top: body[0].top + 1, left: body[0].left }]); //grow snake
         addPoint();
+        eat();
       }
       if (direction == "down") {
         setBody([...body, { top: body[0].top - 1, left: body[0].left }]); //grow snake
         addPoint();
+        eat();
       }
       if (direction == "right") {
         setBody([...body, { top: body[0].top, left: body[0].left + 1 }]); //grow snake
         addPoint();
+        eat();
       }
       if (direction == "left") {
         setBody([...body, { top: body[0].top, left: body[0].left - 1 }]); //grow snake
         addPoint();
+        eat();
       }
     }
     Gameover();
-  }, 200);
+  }, 100);
 
   return (
     <main
@@ -221,8 +243,8 @@ export default function Home() {
             style={{
               top: food.top * zoom,
               left: food.left * zoom,
-              width: zoom,
-              height: zoom,
+              width: zoom + 5,
+              height: zoom + 5,
               backgroundImage: `url(/download.png)`,
               backgroundSize: "cover",
             }}
