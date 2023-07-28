@@ -15,7 +15,7 @@ const Stopwatch = () => {
     return () => clearInterval(interval);
   }, [running]);
   return (
-    <div className="stopwatch">
+    <div className="stopwatch" style={{ fontSize: 40 }}>
       <div className="numbers">
         <span>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
         <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>

@@ -7,11 +7,22 @@ import { AiOutlineArrowDown } from "react-icons/ai";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Stopwatch from "./stopwatch";
+// import useSound from "use-sound";
+// import beep from "./assets/jumping.mp3";
+
 // import image from "./assets/download.png";
 
 const zoom = 20;
 const areaWidth = 40;
 const areaHeight = 30;
+const image = `url(/download.png)`;
+
+const points: string[] = [];
+for (let i = 0; i < areaWidth; i++) {
+  for (let j = 0; j < areaHeight; j++) {
+    points.push(`${i}-${j}`);
+  }
+}
 
 export default function Home() {
   const [body, setBody] = useState([
@@ -47,25 +58,25 @@ export default function Home() {
         switch (e.code) {
           case "ArrowDown":
             if (prevDirection !== "up") {
-              beep();
+              // Beep();
               return "down";
             }
             break;
           case "ArrowRight":
             if (prevDirection !== "left") {
-              beep();
+              // beep();
               return "right";
             }
             break;
           case "ArrowUp":
             if (prevDirection !== "down") {
-              beep();
+              // beep();
               return "up";
             }
             break;
           case "ArrowLeft":
             if (prevDirection !== "right") {
-              beep();
+              // beep();
               return "left";
             }
             break;
@@ -79,131 +90,137 @@ export default function Home() {
     setPoint(point + 2);
   }
 
-  function beep() {
-    var snd = new Audio(
-      "https://s33.aconvert.com/convert/p3r68-cdx67/tbyvh-x66r9.mp3"
-    );
-    snd.play();
-  }
+  // const Beep = () => {
+  //   const [play] = useSound(beep);
+  // };
 
-  function eat() {
-    var sound = new Audio(
-      "https://s19.aconvert.com/convert/p3r68-cdx67/pw4mh-0vojn.mp3"
-    );
-    sound.play();
-  }
+  // function eat() {
+  //   var sound = new Audio(
+  //     "https://s19.aconvert.com/convert/p3r68-cdx67/pw4mh-0vojn.mp3"
+  //   );
+  //   sound.play();
+  // }
 
   function generateFood() {
-    const top = Math.floor(Math.random() * areaHeight);
-    const left = Math.floor(Math.random() * areaWidth);
-    setFood({ top, left });
+    let pointsWithoutBody = [...points];
+    for (let i = 0; i < body.length; i++) {
+      const bodyPartString = `${body[i].left}-${body[i].top}`;
+      pointsWithoutBody = pointsWithoutBody.filter(
+        (string) => string !== bodyPartString
+      );
+    }
+
+    const randomIndexBetweenPoints = Math.floor(
+      Math.random() * pointsWithoutBody.length
+    );
+    const pointString = pointsWithoutBody[randomIndexBetweenPoints];
+    const [leftString, topString] = pointString.split("-");
+    setFood({ top: Number(topString), left: Number(leftString) });
   }
   function goRight() {
-    const newBody = [...body];
-
-    newBody.pop();
-
-    let newLeft = newBody[0].left + 1;
+    let newLeft = body[0].left + 1;
     if (newLeft > areaWidth - 1) {
       newLeft = 0;
     }
 
-    newBody.unshift({ ...newBody[0], left: newLeft });
-
-    setBody(newBody);
+    return { ...body[0], left: newLeft };
   }
 
   function goDown() {
-    const newBody = [...body];
-
-    newBody.pop();
-
-    let newTop = newBody[0].top + 1;
+    let newTop = body[0].top + 1;
     if (newTop > areaHeight - 1) {
       newTop = 0;
     }
 
-    newBody.unshift({ ...newBody[0], top: newTop });
-
-    setBody(newBody);
+    return { ...body[0], top: newTop };
   }
+
   function goUp() {
-    const newBody = [...body];
-
-    newBody.pop();
-
-    let newTop = newBody[0].top - 1;
+    let newTop = body[0].top - 1;
     if (newTop < 0) {
       newTop = areaHeight - 1;
     }
 
-    newBody.unshift({ ...newBody[0], top: newTop });
-
-    setBody(newBody);
+    return { ...body[0], top: newTop };
   }
+
   function goLeft() {
-    const newBody = [...body];
-
-    newBody.pop();
-
-    let newLeft = newBody[0].left - 1;
+    let newLeft = body[0].left - 1;
     if (newLeft < 0) {
       newLeft = areaWidth - 1;
     }
 
-    newBody.unshift({ ...newBody[0], left: newLeft });
-
-    setBody(newBody);
+    return { ...body[0], left: newLeft };
   }
 
   useInterval(() => {
+    const newBody = [...body];
+    newBody.pop();
+
+    let newHead = null;
     switch (direction) {
       case "right":
-        goRight();
+        newHead = goRight();
         break;
       case "down":
-        goDown();
+        newHead = goDown();
 
         break;
 
       case "up":
-        goUp();
+        newHead = goUp();
 
         break;
 
       case "left":
-        goLeft();
+        newHead = goLeft();
 
         break;
+      default:
+        newHead = goRight();
     }
 
+    newBody.unshift(newHead);
+
     // check food is consumed
-    if (body[0].top === food.top && body[0].left === food.left) {
-      generateFood(); // generate new food
+
+    const isFoodConsumedBySnake =
+      newBody[0].top === food.top && newBody[0].left === food.left;
+    if (isFoodConsumedBySnake) {
+      generateFood();
+
       if (direction == "up") {
         setBody([...body, { top: body[0].top + 1, left: body[0].left }]); //grow snake
         addPoint();
-        eat();
+        // eat();
       }
       if (direction == "down") {
         setBody([...body, { top: body[0].top - 1, left: body[0].left }]); //grow snake
         addPoint();
-        eat();
+        // eat();
       }
       if (direction == "right") {
         setBody([...body, { top: body[0].top, left: body[0].left + 1 }]); //grow snake
         addPoint();
-        eat();
+        // eat();
       }
       if (direction == "left") {
         setBody([...body, { top: body[0].top, left: body[0].left - 1 }]); //grow snake
         addPoint();
-        eat();
+        // eat();
       }
+    } else {
+      setBody(newBody);
     }
     Gameover();
   }, 100);
 
+  if (!image)
+    return (
+      <>
+        <div>loading...</div>
+      </>
+    );
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24`}
@@ -220,6 +237,12 @@ export default function Home() {
         style={{
           position: "absolute",
           right: 100,
+          fontSize: 50,
+          fontWeight: "bolder",
+          padding: 30,
+          borderRadius: 5,
+          border: "1px ",
+          boxShadow: "20px 20px 100px rgba(0, 0, 0, 0.3)",
         }}
       >
         Your points: {point}
@@ -245,7 +268,8 @@ export default function Home() {
               left: food.left * zoom,
               width: zoom + 5,
               height: zoom + 5,
-              backgroundImage: `url(/download.png)`,
+              backgroundImage: image,
+
               backgroundSize: "cover",
             }}
           ></div>
@@ -263,7 +287,18 @@ export default function Home() {
             ></div>
           ))}
         </div>
-        <button onClick={handleRefresh}>Refresh</button>
+        <button
+          onClick={handleRefresh}
+          style={{
+            fontSize: 20,
+            position: "absolute",
+            bottom: 200,
+            right: 835,
+            height: 80,
+          }}
+        >
+          Refresh
+        </button>
         <div
           style={{
             display: "flex",
